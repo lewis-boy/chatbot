@@ -9,6 +9,7 @@ import { nanoid } from 'nanoid';
 import { Message } from '@/lib/validators/message';
 import { MessagesContext } from '@/context/messages';
 import { CornerDownLeft, Loader2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {
 
@@ -32,7 +33,11 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ messages: [message] }),
-            })
+            });
+
+            // if (!response.ok) {
+            //     throw new Error();
+            // }
 
             return response.body;
         },
@@ -71,6 +76,11 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
             setTimeout(() => {
                 textareaRef.current?.focus();
             }, 10);
+        },
+        onError(_, message) {
+            toast.error('Something went wrong');
+            removeMessage(message.id);
+            textareaRef.current?.focus();
         }
     })
 
